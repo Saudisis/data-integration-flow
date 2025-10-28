@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Data Integration Flow</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#0f172a; --muted:#64748b; --card:#f8fafc; --line:#e2e8f0;
+    --blue:#dbeafe; --green:#dcfce7; --yellow:#fef9c3; --orange:#ffedd5; --purple:#f3e8ff;
+  }
+  body{margin:0; font-family:Arial, sans-serif; background:var(--bg); color:var(--fg)}
+  header{padding:32px 20px 8px; text-align:center}
+  h1{margin:0; font-size:32px}
+  p.lead{color:var(--muted)}
+  .container{max-width:1100px; margin:0 auto; padding:20px}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; margin:14px 0;}
+  .flow{display:flex; gap:10px; flex-wrap:wrap; justify-content:space-between}
+  .box{padding:12px; border-radius:12px; border:1px solid var(--line); background:#fff; min-width:180px; text-align:center}
+  .arrow{font-size:20px; color:var(--muted)}
+  .b-blue{background:var(--blue)} .b-green{background:var(--green)} .b-yellow{background:var(--yellow)}
+  .b-orange{background:var(--orange)} .b-purple{background:var(--purple)}
+  .legend{text-align:center; color:var(--muted); font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Data Integration Flow</h1>
+  <p class="lead">BPMN • ER • Block Architecture • UML • UX Flow</p>
+</header>
+
+<div class="container">
+
+  <section class="card">
+    <h2>1. BPMN Process Diagram</h2>
+    <div class="flow">
+      <div class="box b-blue">User selects Province & Pollutant</div>
+      <div class="arrow">➜</div>
+      <div class="box b-green">Download ARPA data</div>
+      <div class="arrow">➜</div>
+      <div class="box b-yellow">Clean & Merge</div>
+      <div class="arrow">➜</div>
+      <div class="box b-orange">Analyze by time window</div>
+      <div class="arrow">➜</div>
+      <div class="box b-purple">Summary per sensor/day</div>
+    </div>
+    <p class="legend">Flow: User → System → Output</p>
+  </section>
+
+  <section class="card">
+    <h2>2. Entity–Relationship (ER) Diagram</h2>
+    <p class="legend">Sensor (1:N) → Measurements → Summary (1 per day)</p>
+  </section>
+
+  <section class="card">
+    <h2>3. Block Architecture</h2>
+    <div class="flow">
+      <div class="box b-blue">UI Widgets</div>
+      <div class="arrow">➜</div>
+      <div class="box b-green">Downloader</div>
+      <div class="arrow">➜</div>
+      <div class="box b-yellow">Cleaner</div>
+      <div class="arrow">➜</div>
+      <div class="box b-orange">Analyzer</div>
+      <div class="arrow">➜</div>
+      <div class="box b-purple">Output</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>4. UML Use Case</h2>
+    <p>User initiates → System validates → Processes data → Returns summary.</p>
+  </section>
+
+  <section class="card">
+    <h2>5. UX / User Flow</h2>
+    <ol>
+      <li>Open notebook and select Province, Pollutant.</li>
+      <li>Click “Download Data”.</li>
+      <li>Wait for successful message.</li>
+      <li>Click “Analyze”.</li>
+      <li>View summarized results.</li>
+    </ol>
+  </section>
+
+</div>
+</body>
+</html>

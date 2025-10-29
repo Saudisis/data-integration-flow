@@ -145,23 +145,29 @@ flowchart TD
 
 
 
-<h2 id="ux">5️⃣ UX / User Flow</h2>
+<h2 id="uml">4️⃣ UML Use Case</h2>
 <div class="mermaid">
 flowchart TD
-    start([User Opens App])
-    config[Select Province + Pollutant]
-    download[Click 'Download Data']
-    wait{Download Complete?}
-    analyze[Click 'Analyze']
-    results[View Results + Map]
-    export[Export CSV / GeoPackage]
-    gee[Optional: Upload to GEE]
-    end([Finish])
+    actorR([Researcher])
+    actorAPI([External APIs])
 
-    start --> config --> download --> wait
-    wait -->|Yes| analyze --> results --> export --> gee --> end
-    wait -->|No| download
+    uc1([Configure Analysis])
+    uc2([Download Data])
+    uc3([Analyze Results])
+    uc4([Export Dataset])
+    uc5([Provide Data])
+    uc6([Merge and Harmonize])
+    uc7([Generate Outputs])
+
+    actorR --> uc1
+    actorR --> uc2
+    actorR --> uc3
+    actorR --> uc4
+    actorAPI --> uc5
+    uc2 --> uc6
+    uc6 --> uc7
 </div>
+
 
 
 <h2 id="pipeline">6️⃣ Pipeline Data Flow</h2>

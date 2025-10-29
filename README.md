@@ -42,7 +42,7 @@ The pipeline aggregates hourly and daily data, computes temporal windows (`curre
 
 ---
 
-## ⚙️ Technologies Used
+## Technologies Used
 
 - **Python** (`pandas`, `xarray`, `geopandas`, `rioxarray`, `cdsapi`, `requests`, `matplotlib`)
 - **Google Earth Engine API**
@@ -52,7 +52,7 @@ The pipeline aggregates hourly and daily data, computes temporal windows (`curre
 
 ---
 
-## 📊 Included Visual Diagrams
+## Included Visual Diagrams
 
 | Section | Diagram |
 |:--------|:---------|

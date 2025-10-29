@@ -1,50 +1,59 @@
-flowchart TD
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AQA Data Integration Pipeline — Interactive Workflow</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #ffffff;
+    color: #111827;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+  header {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1.5rem;
+  }
+  h1 {
+    margin: 0;
+    font-size: 1.8rem;
+  }
+  p {
+    margin-top: .4rem;
+    color: #64748b;
+  }
+  iframe {
+    width: 100%;
+    height: 900px;
+    border: none;
+  }
+  footer {
+    padding: 1rem;
+    font-size: 0.85rem;
+    color: #64748b;
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>🌍 AQA Data Integration Pipeline</h1>
+    <p>Interactive Workflow — ARPA + ERA5 Integration</p>
+  </header>
 
-%% === INPUTS ===
-A1[User Configuration<br>(cfg: start_date, end_date,<br>time windows, bbox, variables)]
-A2[ARPA Lombardia API]
-A3[ERA5 CDS API]
+  <!-- Interactive Mermaid Diagram hosted on mermaid.live -->
+  <iframe
+    src="https://mermaid.live/view#pako:eNqVU11v2zAM_CrZb4hQkbiHwVDpW1sR6pSkY4jS6JCEzqG-IXD93ZB4yZoKS29vLrUpqPC9T4QicYxKM2I5kRAtH1YfWeNg-rdFwbZ16C9lDo2oOPN9Yt7gT7K_r63cU4jS9_8yzc3dVrP_Q8T7v45hS25tdxJZQuGkV4C6LxKMpXzPvf1wD2plvV6Dd2nM4Wm1Ao3M4dkWZf8J9sKjoOY9FIfkMHPz9dt4OBcSW2Pz0m5tFFzUVsG_RyKjVzYx9A9DdkLbTfHuAvJQZ1HWw7b02u8a5yZUX7XznGCOyqMo1bKcQm3ebHqE3aAiyF0LrM6kGh6xP0W9Fj8frE3n7-VWl3s1R1uoy1UZnQ_tjm5b8sdZXyDHwXbhdx3n6U8qSvbg11rLaZyurJ8nXj8AA5I6iw"
+    title="AQA Pipeline Diagram (Mermaid)">
+  </iframe>
 
-%% === STAGE 1: METADATA ===
-B1[Load ARPA Metadata<br>→ Sensors, Coordinates, Pollutants]
-
-%% === STAGE 2: ARPA DOWNLOAD ===
-B2[Download ARPA Measurements<br>→ Iterate daily<br>→ Query main & backup endpoints<br>→ Merge with metadata]
-
-%% === STAGE 3: ERA5 DOWNLOAD ===
-B3[Download ERA5 Variables<br>→ Loop through 8 parameters<br>→ Store in .nc files per day]
-
-%% === STAGE 4: ERA5 MERGE ===
-B4[Merge ERA5 Files<br>→ Combine all NetCDF<br>→ Convert to DataFrame (xarray)]
-
-%% === STAGE 5: GRID GENERATION ===
-B5[Build Spatial Grid<br>→ Compute min distance<br>→ Generate points across bounding box]
-
-%% === STAGE 6: INTERPOLATION ===
-B6[Interpolate ERA5 on ARPA Grid<br>→ Bilinear interpolation<br>→ Assign values to grid cells]
-
-%% === STAGE 7: ANALYSIS ===
-B7[Compute Period Means<br>→ Classify hours (prev/curr)<br>→ Aggregate by sensor]
-
-%% === STAGE 8: FUSION ===
-B8[Merge ERA5 + ARPA<br>→ Join nearest grid points<br>→ Enrich ARPA sensors<br>with meteorological context]
-
-%% === OUTPUT ===
-C1[Integrated Dataset<br>(ARPA + ERA5 merged)]
-C2[Summary CSV + GeoDataFrame<br>→ Ready for visualization or GEE upload]
-
-%% === FLOWS ===
-A1 --> B1
-B1 --> B2
-A2 --> B2
-A1 --> B3
-A3 --> B3
-B3 --> B4
-B1 --> B5
-B4 --> B6
-B5 --> B6
-B2 --> B7
-B6 --> B8
-B7 --> B8
-B8 --> C1
-C1 --> C2
+  <footer>
+    © 2025 Saudisis — Interactive diagram rendered via Mermaid Live
+  </footer>
+</body>
+</html>

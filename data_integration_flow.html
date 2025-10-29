@@ -3,87 +3,50 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Data Integration Flow — AQA Pipeline</title>
+<title>Data Integration Flow — AQA</title>
 
-<!-- Mermaid -->
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <script>
-  mermaid.initialize({
-    startOnLoad: true,
-    theme: "default",
-    securityLevel: "loose"
-  });
+  mermaid.initialize({ startOnLoad: true, theme: "default", securityLevel: "loose" });
 </script>
 
 <style>
-  body {
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-    background: #ffffff;
-    color: #111827;
-    margin: 0;
-  }
-  header {
-    background: #f8fafc;
-    border-bottom: 1px solid #e2e8f0;
-    text-align: center;
-    padding: 1.5rem;
-  }
-  h1 { margin: 0; font-size: 1.8rem; }
-  p { color: #64748b; margin: 0.4rem 0 0; }
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 20px; }
-  .mermaid { margin: 30px auto; max-width: 100%; }
+  body { font-family: Segoe UI, Roboto, sans-serif; margin: 0; background: #fff; color: #111; }
+  header { background: #f8fafc; border-bottom: 1px solid #e2e8f0; text-align: center; padding: 1.5rem; }
+  h1 { margin: 0; }
+  p { color: #6b7280; margin: 0.4rem 0; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
 </style>
 </head>
 
 <body>
-  <header>
-    <h1>🌍 Data Integration Flow</h1>
-    <p>ARPA + ERA5 Data Harmonization Pipeline</p>
-  </header>
+<header>
+  <h1>🌍 AQA Data Integration Flow</h1>
+  <p>Technical Workflow — ARPA + ERA5 Integration</p>
+</header>
 
-  <div class="wrap">
-    <div class="mermaid">
+<div class="container">
+<div class="mermaid">
 flowchart TD
-    A1[User Configuration<br/>(cfg: start_date, end_date, time windows, bbox, variables)]
-    A2[ARPA Lombardia API]
-    A3[ERA5 CDS API]
+  S1[Load ARPA Metadata]
+  S2[Download ARPA Data]
+  S3[Download ERA5 Variables]
+  S4[Merge ERA5 Files]
+  S5[Build Spatial Grid]
+  S6[Interpolate ERA5 on ARPA Grid]
+  S7[Compute Period Means]
+  S8[Merge ERA5 + ARPA]
+  S9[Export Final Dataset]
 
-    B1[Load ARPA Metadata<br/>Sensors • Coordinates • Pollutants]
-    B2[Download ARPA Measurements<br/>Iterate daily • Merge with metadata]
-    B3[Download ERA5 Variables<br/>Loop through variables (.nc files)]
-    B4[Merge ERA5 Files<br/>Combine NetCDF → one dataset]
-    B5[Build Spatial Grid<br/>Compute min sensor distance • generate bounding grid]
-    B6[Interpolate ERA5 on ARPA Grid<br/>Bilinear interpolation for each hour]
-    B7[Compute Period Means<br/>Classify hours “prev” and “curr” (12:00–15:00)]
-    B8[Merge ERA5 + ARPA<br/>Nearest join • enrich sensors with meteo context]
-    C1[Integrated Dataset<br/>(ARPA + ERA5)]
-    C2[Summary CSV + GeoDataFrame<br/>Ready for visualization / GEE upload]
+  S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7 --> S8 --> S9
 
-    %% Flows
-    A1 --> B1
-    B1 --> B2
-    A2 --> B2
-    A1 --> B3
-    A3 --> B3
-    B3 --> B4
-    B1 --> B5
-    B4 --> B6
-    B5 --> B6
-    B2 --> B7
-    B6 --> B8
-    B7 --> B8
-    B8 --> C1
-    C1 --> C2
-
-    %% Style
-    classDef stage fill:#d1e9ff,stroke:#1e3a8a,stroke-width:1px,color:#000;
-    classDef process fill:#f1f5f9,stroke:#1e293b,stroke-width:1px,color:#000;
-    classDef output fill:#dcfce7,stroke:#166534,stroke-width:1px,color:#000;
-    class A1,A2,A3 stage;
-    class B1,B2,B3,B4,B5,B6,B7,B8 process;
-    class C1,C2 output;
-    </div>
-  </div>
+  classDef data fill:#dbeafe,stroke:#1e40af,stroke-width:1px,color:#000;
+  classDef process fill:#f1f5f9,stroke:#1e293b,stroke-width:1px,color:#000;
+  classDef output fill:#dcfce7,stroke:#166534,stroke-width:1px,color:#000;
+  class S1,S2,S3 data;
+  class S4,S5,S6,S7,S8 process;
+  class S9 output;
+</div>
+</div>
 </body>
 </html>
-

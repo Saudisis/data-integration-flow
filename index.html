@@ -1,77 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>AQA Data Integration Pipeline — Interactive Workflow</title>
 
-<!-- Cargar Mermaid.js directamente -->
-<script type="module">
-  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
-  mermaid.initialize({ startOnLoad: true, theme: "default" });
+<!-- Mermaid clásico (no ES module) -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  // Inicializa Mermaid al cargar la página
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: "default",
+    securityLevel: "loose"   // permite saltos de línea/HTML simple en labels
+  });
 </script>
 
 <style>
-  body {
-    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-    background: #ffffff;
-    color: #111827;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-  }
-  header {
-    background: #f8fafc;
-    border-bottom: 1px solid #e2e8f0;
-    padding: 1.5rem;
-  }
-  h1 {
-    margin: 0;
-    font-size: 1.8rem;
-  }
-  p {
-    margin-top: .4rem;
-    color: #64748b;
-  }
-  .mermaid {
-    text-align: center;
-    margin: 2rem auto;
-    max-width: 95%;
-  }
-  footer {
-    padding: 1rem;
-    font-size: 0.85rem;
-    color: #64748b;
-    background: #f9fafb;
-    border-top: 1px solid #e5e7eb;
-  }
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#fff;color:#111827;margin:0}
+  header{background:#f8fafc;border-bottom:1px solid #e2e8f0;padding:1.5rem;text-align:center}
+  h1{margin:0;font-size:1.8rem}
+  p{margin:.4rem 0 0;color:#64748b}
+  .wrap{max-width:1100px;margin:0 auto;padding:20px}
+  .mermaid{margin:24px auto;max-width:100%}
+  footer{padding:1rem;text-align:center;color:#64748b;background:#f9fafb;border-top:1px solid #e5e7eb}
 </style>
 </head>
-
 <body>
   <header>
     <h1>🌍 AQA Data Integration Pipeline</h1>
     <p>Interactive Workflow — ARPA + ERA5 Integration</p>
   </header>
 
-  <!-- Diagrama Mermaid embebido -->
-  <div class="mermaid">
+  <div class="wrap">
+    <!-- Diagrama Mermaid embebido -->
+    <div class="mermaid">
 flowchart TD
-    A1[User Configuration<br/>(cfg: start_date, end_date, variables)] --> B1[Load ARPA Metadata]
-    B1 --> B2[Download ARPA Measurements]
-    B2 --> B3[Download ERA5 Variables]
-    B3 --> B4[Merge ERA5 Files]
-    B4 --> B5[Build Spatial Grid]
-    B5 --> B6[Interpolate ERA5 on ARPA Grid]
-    B6 --> B7[Compute Period Means]
-    B7 --> B8[Merge ERA5 + ARPA]
-    B8 --> C1[Integrated Dataset]
-    C1 --> C2[Summary CSV + GeoDataFrame]
-    C2 --> C3[Visualization or GEE upload]
+  A1[User Configuration<br/>(cfg: dates, time windows, bbox, vars)]
+  A2[ARPA Lombardia API]
+  A3[ERA5 CDS API]
+
+  B1[Load ARPA Metadata<br/>Sensors • Coordinates • Pollutants]
+  B2[Download ARPA Measurements<br/>Daily loop • Main/Backup endpoints<br/>Merge with metadata]
+  B3[Download ERA5 Variables<br/>Loop variables → .nc files]
+  B4[Merge ERA5 Files<br/>Combine NetCDF → DataFrame (xarray)]
+  B5[Build Spatial Grid<br/>Min sensor distance → grid in bbox]
+  B6[Interpolate ERA5 on Grid<br/>Bilinear interpolation]
+  B7[Compute Period Means<br/>Classify hours prev/curr • aggregate]
+  B8[Merge ERA5 + ARPA<br/>Nearest join • enrich sensors]
+
+  C1[Integrated Dataset (ARPA + ERA5)]
+  C2[Summary CSV + GeoDataFrame]
+  C3[Visualization / GEE upload]
+
+  %% Flujos
+  A1 --> B1
+  B1 --> B2
+  A2 --> B2
+  A1 --> B3
+  A3 --> B3
+  B3 --> B4
+  B1 --> B5
+  B4 --> B6
+  B5 --> B6
+  B2 --> B7
+  B6 --> B8
+  B7 --> B8
+  B8 --> C1 --> C2 --> C3
+    </div>
   </div>
 
-  <footer>
-    © 2025 Saudisis — Interactive diagram rendered with Mermaid.js
-  </footer>
+  <footer>© 2025 Saudisis — Mermaid.js on GitHub Pages</footer>
 </body>
 </html>

@@ -62,7 +62,7 @@ footer {
 
 <body>
 <header>
-  <h1>🌍 AQA Data Integration Pipeline</h1>
+  <h1> AQA Data Integration Pipeline</h1>
   <p>Interactive Workflow — ARPA + ERA5 + Sentinel-5P</p>
 </header>
 
@@ -118,19 +118,31 @@ graph TD
 
 <h2 id="uml">4️⃣ UML Use Case</h2>
 <div class="mermaid">
+%%{init: {'theme': 'default'}}%%
 flowchart TD
-    actor_Researcher([Researcher])
-    actor_API([External APIs])
+    %% Define actors
+    R([Researcher])
+    API([External API])
 
-    actor_Researcher --> UC1[Configure Analysis]
-    actor_Researcher --> UC2[Download Data]
-    actor_Researcher --> UC3[Analyze Results]
-    actor_Researcher --> UC4[Export Dataset]
-    actor_API --> UC5[Provide Data]
+    %% Use cases
+    UC1([Configure Analysis])
+    UC2([Download Data])
+    UC3([Analyze Results])
+    UC4([Export Dataset])
+    UC5([Provide Data])
+    UC6([Merge and Harmonize])
+    UC7([Generate Outputs])
 
-    UC2 --> UC6[Merge and Harmonize]
-    UC6 --> UC7[Generate Outputs]
+    %% Relationships
+    R --> UC1
+    R --> UC2
+    R --> UC3
+    R --> UC4
+    API --> UC5
+    UC2 --> UC6
+    UC6 --> UC7
 </div>
+
 
 
 <h2 id="ux">5️⃣ UX / User Flow</h2>

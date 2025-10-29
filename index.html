@@ -118,22 +118,39 @@ graph TD
 
 <h2 id="uml">4️⃣ UML Use Case</h2>
 <div class="mermaid">
-graph TD
-    Researcher --> (Configure Analysis)
-    Researcher --> (Download Data)
-    Researcher --> (Analyze Results)
-    Researcher --> (Export Dataset)
-    API[(External APIs)] --> (Provide Data)
+flowchart TD
+    actor_Researcher([Researcher])
+    actor_API([External APIs])
+
+    actor_Researcher --> UC1[Configure Analysis]
+    actor_Researcher --> UC2[Download Data]
+    actor_Researcher --> UC3[Analyze Results]
+    actor_Researcher --> UC4[Export Dataset]
+    actor_API --> UC5[Provide Data]
+
+    UC2 --> UC6[Merge and Harmonize]
+    UC6 --> UC7[Generate Outputs]
 </div>
 
-<h2 id="ux">5️⃣ UX Flow</h2>
+
+<h2 id="ux">5️⃣ UX / User Flow</h2>
 <div class="mermaid">
 flowchart TD
-    U1[Start Notebook/App] --> U2[Select Province & Pollutant]
-    U2 --> U3[Download Data]
-    U3 --> U4[Analyze]
-    U4 --> U5[Visualize + Export]
+    start([User Opens App])
+    config[Select Province + Pollutant]
+    download[Click 'Download Data']
+    wait{Download Complete?}
+    analyze[Click 'Analyze']
+    results[View Results + Map]
+    export[Export CSV / GeoPackage]
+    gee[Optional: Upload to GEE]
+    end([Finish])
+
+    start --> config --> download --> wait
+    wait -->|Yes| analyze --> results --> export --> gee --> end
+    wait -->|No| download
 </div>
+
 
 <h2 id="pipeline">6️⃣ Pipeline Data Flow</h2>
 <div class="mermaid">

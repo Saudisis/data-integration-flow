@@ -48,18 +48,18 @@ flowchart TD
     A2["ARPA Lombardia API"]
     A3["ERA5 CDS API"]
 
-    B1["Load ARPA Metadata<br/>Sensors • Coordinates • Pollutants"]
-    B2["Download ARPA Measurements<br/>Iterate daily • Merge with metadata"]
-    B3["Download ERA5 Variables<br/>Loop through variables (.nc files)"]
-    B4["Merge ERA5 Files<br/>Combine NetCDF → one dataset"]
-    B5["Build Spatial Grid<br/>Compute min sensor distance • generate bounding grid"]
-    B6["Interpolate ERA5 on ARPA Grid<br/>Bilinear interpolation for each hour"]
-    B7["Compute Period Means<br/>Classify hours ‘prev’ and ‘curr’ (12:00–15:00)"]
-    B8["Merge ERA5 + ARPA<br/>Nearest join • enrich sensors with meteo context"]
+    B1["Load ARPA Metadata: Sensors, Coordinates, Pollutants"]
+    B2["Download ARPA Measurements - iterate daily, merge metadata"]
+    B3["Download ERA5 Variables - loop through variables (.nc)"]
+    B4["Merge ERA5 Files - combine NetCDF into one dataset"]
+    B5["Build Spatial Grid - compute min sensor distance, generate bounding grid"]
+    B6["Interpolate ERA5 on ARPA Grid - bilinear interpolation per hour"]
+    B7["Compute Period Means - classify hours as previous/current"]
+    B8["Merge ERA5 and ARPA - nearest join, enrich sensors with meteo context"]
     C1["Integrated Dataset (ARPA + ERA5)"]
-    C2["Summary CSV + GeoDataFrame<br/>Ready for visualization / GEE upload"]
+    C2["Export Summary CSV and GeoDataFrame - ready for GEE or visualization"]
 
-    %% Flow connections
+    %% Connections
     A1 --> B1
     B1 --> B2
     A2 --> B2

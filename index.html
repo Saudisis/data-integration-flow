@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>AQA Data Integration Pipeline — ARPA + ERA5 + Sentinel-5P</title>
+<title>AQA Data Integration Documentation</title>
 
 <!-- Mermaid.js -->
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
@@ -28,67 +28,257 @@
     text-align: center;
     padding: 1.5rem;
   }
-  h1 { margin: 0; font-size: 1.9rem; }
-  p { color: #64748b; margin: 0.4rem 0 0; }
-  .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
-  .mermaid { margin: 30px auto; max-width: 100%; }
+  h1 { margin: 0; font-size: 2rem; }
+  h2 { border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3rem; }
+  nav {
+    background: #e5e7eb;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  nav a {
+    text-decoration: none;
+    color: #1e3a8a;
+    font-weight: 600;
+  }
+  nav a:hover {
+    text-decoration: underline;
+  }
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  .mermaid {
+    margin: 40px auto;
+    max-width: 100%;
+  }
+  footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.9rem;
+    color: #6b7280;
+  }
 </style>
 </head>
 
 <body>
-  <header>
-    <h1>🌍 AQA Data Integration Pipeline</h1>
-    <p>Interactive Workflow — ARPA + ERA5 + Sentinel-5P Integration</p>
-  </header>
+<header>
+  <h1>🌍 AQA Data Integration Documentation</h1>
+  <p>Comprehensive System Diagrams — ARPA + ERA5 + Sentinel-5P</p>
+</header>
 
-  <div class="container">
-    <div class="mermaid">
+<nav>
+  <a href="#bpmn">BPMN Process</a>
+  <a href="#er">ER Diagram</a>
+  <a href="#block">Block Architecture</a>
+  <a href="#uml">UML Use Cases</a>
+  <a href="#ux">UX Flow</a>
+  <a href="#pipeline">Pipeline Flow</a>
+  <a href="#architecture">Computational</a>
+  <a href="#interpolation">Integration Logic</a>
+  <a href="#output">Output Model</a>
+  <a href="#tools">Tools Summary</a>
+</nav>
+
+<div class="container">
+
+<!-- 1. BPMN -->
+<h2 id="bpmn">1️⃣ BPMN Process Diagram</h2>
+<div class="mermaid">
 flowchart TD
-    %% Inputs
-    A1["User Configuration<br/>(dates, AOI, pollutants, time windows)"]
-    A2["ARPA Lombardia API"]
-    A3["ERA5 CDS API"]
-    A4["Sentinel-5P Data (via Google Earth Engine)"]
+    subgraph User
+        U1[Set Parameters: start_date, end_date, AOI, pollutants]
+        U2[Trigger Download and Analysis]
+    end
+    subgraph System
+        S1[Load ARPA Metadata]
+        S2[Download ARPA Measurements]
+        S3[Download ERA5 Variables]
+        S4[Download Sentinel-5P Data]
+        S5[Merge and Harmonize Data]
+        S6[Compute Temporal Means (prev/curr)]
+        S7[Generate Integrated Dataset]
+        S8[Export Results (CSV / GeoDataFrame)]
+    end
+    U1 --> S1 --> S2
+    U2 --> S3 --> S4 --> S5 --> S6 --> S7 --> S8
+</div>
 
-    %% Processing stages
-    B1["Load ARPA Metadata<br/>(sensors, coordinates, pollutants)"]
-    B2["Download ARPA Measurements<br/>Iterate daily and merge metadata"]
-    B3["Download ERA5 Variables<br/>Loop through NetCDF files"]
-    B4["Merge ERA5 Files<br/>Combine into single dataset"]
-    B5["Build Spatial Grid<br/>Compute minimum sensor distance"]
-    B6["Interpolate ERA5 on ARPA Grid<br/>Bilinear interpolation"]
-    B7["Compute Period Means<br/>Classify hours as prev / curr"]
-    B8["Extract Sentinel-5P Concentrations<br/>(NO2, CO, O3, SO2)"]
-    B9["Merge ERA5 + ARPA + Sentinel-5P<br/>Spatial join and enrichment"]
-    C1["Integrated Dataset<br/>(ARPA + ERA5 + Sentinel-5P)"]
-    C2["Export CSV and GeoDataFrame<br/>Ready for visualization or GEE"]
+<!-- 2. ER -->
+<h2 id="er">2️⃣ Entity–Relationship (ER) Diagram</h2>
+<div class="mermaid">
+erDiagram
+    CONFIG ||--o{ ARPA_SENSOR : defines
+    ARPA_SENSOR ||--o{ ARPA_MEASUREMENT : records
+    CONFIG ||--o{ ERA5_FILE : triggers
+    ERA5_FILE ||--o{ ERA5_VARIABLE : contains
+    ERA5_VARIABLE }o--|| GRID_POINT : located_on
+    SENTINEL_OBSERVATION }o--|| GRID_POINT : observed_at
+    ARPA_SENSOR }o--|| GRID_POINT : positioned_on
+    SUMMARY }o--|| GRID_POINT : summarized_at
+</div>
 
-    %% Flow connections
-    A1 --> B1
-    B1 --> B2
-    A2 --> B2
-    A1 --> B3
-    A3 --> B3
-    B3 --> B4
-    B1 --> B5
-    B4 --> B6
-    B5 --> B6
-    B2 --> B7
-    B6 --> B9
-    B7 --> B9
-    A4 --> B8
-    B8 --> B9
-    B9 --> C1
-    C1 --> C2
+<!-- 3. Block -->
+<h2 id="block">3️⃣ Block Architecture Diagram</h2>
+<div class="mermaid">
+graph TD
+    A[User Interface Layer] --> B[Data Acquisition Layer]
+    B --> C[Processing Layer]
+    C --> D[Storage Layer]
+    D --> E[Visualization Layer]
 
-    %% Styles
-    classDef input fill:#dbeafe,stroke:#1e40af,stroke-width:1px,color:#000;
-    classDef process fill:#f1f5f9,stroke:#1e293b,stroke-width:1px,color:#000;
-    classDef output fill:#dcfce7,stroke:#166534,stroke-width:1px,color:#000;
-    class A1,A2,A3,A4 input;
-    class B1,B2,B3,B4,B5,B6,B7,B8,B9 process;
-    class C1,C2 output;
-    </div>
-  </div>
+    subgraph A[User Interface Layer]
+        A1[Widgets: select province, pollutant, dates]
+        A2[Buttons: Download / Analyze]
+    end
+
+    subgraph B[Data Acquisition Layer]
+        B1[ARPA Lombardia API]
+        B2[ERA5 CDS API]
+        B3[Sentinel-5P (GEE)]
+    end
+
+    subgraph C[Processing Layer]
+        C1[Spatial Grid Builder]
+        C2[Temporal Merge (prev/curr)]
+        C3[Bilinear Interpolation]
+        C4[Data Harmonization]
+    end
+
+    subgraph D[Storage Layer]
+        D1[Local CSV & NetCDF]
+        D2[GeoPackage Results]
+    end
+
+    subgraph E[Visualization Layer]
+        E1[GeoDataFrame + Map]
+        E2[Upload to GEE]
+    end
+</div>
+
+<!-- 4. UML -->
+<h2 id="uml">4️⃣ UML Use Case Diagram</h2>
+<div class="mermaid">
+graph TD
+    actor Researcher
+    actor "External APIs" as API
+
+    Researcher --> (Configure Analysis)
+    Researcher --> (Download Data)
+    Researcher --> (Analyze Results)
+    Researcher --> (Export Dataset)
+
+    API --> (Provide ARPA Data)
+    API --> (Provide ERA5 Data)
+    API --> (Provide Sentinel-5P Data)
+
+    (Download Data) --> (Merge & Harmonize)
+    (Merge & Harmonize) --> (Generate Outputs)
+</div>
+
+<!-- 5. UX -->
+<h2 id="ux">5️⃣ UX / User Flow</h2>
+<div class="mermaid">
+flowchart TD
+    U1[Start Notebook / Web App]
+    U2[Select Province & Pollutant]
+    U3[Click 'Download Data']
+    U4[Wait for Success Message]
+    U5[Click 'Analyze']
+    U6[Display Results & Map]
+    U7[Export CSV / GeoPackage]
+    U8[Optional: Upload to GEE]
+    U1 --> U2 --> U3 --> U4 --> U5 --> U6 --> U7 --> U8
+</div>
+
+<!-- 6. Pipeline -->
+<h2 id="pipeline">6️⃣ Pipeline Data Flow</h2>
+<div class="mermaid">
+graph LR
+    A1[ARPA Metadata CSV] --> B1[Sensor Catalog]
+    A2[ERA5 .nc Files] --> B2[ERA5 Variables]
+    A3[Sentinel-5P GEE] --> B3[Pollutant Rasters]
+    B1 --> C[Integration & Harmonization]
+    B2 --> C
+    B3 --> C
+    C --> D[Unified DataFrame]
+    D --> E[CSV / GeoDataFrame Export]
+</div>
+
+<!-- 7. Architecture -->
+<h2 id="architecture">7️⃣ Computational Architecture</h2>
+<div class="mermaid">
+graph TD
+    J[Jupyter / Anaconda] --> P[Python Environment]
+    P --> L1[pandas]
+    P --> L2[geopandas]
+    P --> L3[xarray]
+    P --> L4[cdsapi]
+    P --> L5[earthengine-api]
+    P --> L6[contextily]
+    L3 --> F[ERA5 Data]
+    L2 --> G[ARPA Data]
+    L5 --> H[Sentinel-5P Data]
+    F & G & H --> M[Integration Scripts]
+    M --> R[results/ Folder]
+</div>
+
+<!-- 8. Interpolation -->
+<h2 id="interpolation">8️⃣ Integration and Interpolation Logic</h2>
+<div class="mermaid">
+flowchart TD
+    A1[ERA5 Variables] --> A2[ERA5 Dataset (xarray)]
+    A2 --> A3[Interpolate on ARPA Grid (bilinear)]
+    A3 --> A4[ERA5 Interpolated Table]
+    B1[Sentinel-5P Observations] --> B2[Daily Mean Extraction]
+    B2 --> B3[Spatial Join with ARPA Grid]
+    A4 & B3 --> C[Integrated ERA5 + Sentinel + ARPA Dataset]
+</div>
+
+<!-- 9. Output -->
+<h2 id="output">9️⃣ Output Data Model</h2>
+<div class="mermaid">
+classDiagram
+    class IntegratedDataset {
+        int grid_id
+        float lat
+        float lon
+        string pollutant
+        float prev_mean
+        float curr_mean
+        float sentinel_no2
+        float sentinel_co
+        float sentinel_o3
+        float sentinel_so2
+        float t2m_c
+        float sp_hpa
+        float wind_speed
+        float blh_km
+        float tp
+        float ssr_kJ
+        string province
+        date date
+    }
+</div>
+
+<!-- 10. Tools -->
+<h2 id="tools">🔟 Tools Summary Diagram</h2>
+<div class="mermaid">
+graph LR
+    A[Data APIs] -->|Fetch| B[ARPA / ERA5 / Sentinel]
+    B -->|Process| C[Python Environment]
+    C -->|Store| D[results/ Folder]
+    D -->|Visualize| E[Jupyter / GEE / Web Maps]
+    E -->|Publish| F[GitHub Pages / Reports]
+</div>
+
+</div>
+
+<footer>
+  © 2025 AQA Integration Pipeline — ARPA + ERA5 + Sentinel-5P Documentation
+</footer>
 </body>
 </html>

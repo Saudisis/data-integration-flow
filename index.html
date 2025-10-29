@@ -1,27 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>AQA Data Integration Pipeline</title>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs" type="module"></script>
-<script type="module">
-  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
-  mermaid.initialize({ startOnLoad: true, theme: "default" });
+
+<!-- ✅ use the classic non-module version -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: "default",
+    securityLevel: "loose"
+  });
 </script>
+
 <style>
-body { font-family: system-ui, sans-serif; margin:0; background:#fff; color:#111; }
-header { background:#f3f4f6; text-align:center; padding:1.5rem; border-bottom:1px solid #ddd; }
-nav { background:#e5e7eb; padding:10px; display:flex; justify-content:center; flex-wrap:wrap; gap:10px; }
-nav a { color:#1d4ed8; text-decoration:none; font-weight:600; }
-.container { max-width:1100px; margin:auto; padding:2rem; }
-.mermaid { margin:30px 0; }
-h2 { border-bottom:2px solid #eee; padding-bottom:5px; }
-footer { text-align:center; color:#666; padding:1rem; border-top:1px solid #eee; }
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  background: #fff;
+  color: #111;
+}
+header {
+  background: #f3f4f6;
+  text-align: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #ddd;
+}
+nav {
+  background: #e5e7eb;
+  padding: 10px;
+  text-align: center;
+}
+nav a {
+  margin: 0 8px;
+  text-decoration: none;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 2rem;
+}
+.mermaid {
+  margin: 40px 0;
+}
+h2 {
+  border-bottom: 2px solid #eee;
+  padding-bottom: 5px;
+}
+footer {
+  text-align: center;
+  color: #666;
+  padding: 1rem;
+  border-top: 1px solid #eee;
+}
 </style>
 </head>
-<body>
 
+<body>
 <header>
   <h1>🌍 AQA Data Integration Pipeline</h1>
   <p>Interactive Workflow — ARPA + ERA5 + Sentinel-5P</p>
@@ -32,9 +71,8 @@ footer { text-align:center; color:#666; padding:1rem; border-top:1px solid #eee;
   <a href="#er">ER</a>
   <a href="#block">Architecture</a>
   <a href="#uml">UML</a>
-  <a href="#ux">UX Flow</a>
+  <a href="#ux">UX</a>
   <a href="#pipeline">Pipeline</a>
-  <a href="#architecture">Computational</a>
   <a href="#integration">Integration</a>
   <a href="#output">Output</a>
   <a href="#tools">Tools</a>
@@ -42,24 +80,19 @@ footer { text-align:center; color:#666; padding:1rem; border-top:1px solid #eee;
 
 <div class="container">
 
-<!-- 1. BPMN -->
-<h2 id="bpmn">1️⃣ BPMN Process Diagram</h2>
+<h2 id="bpmn">1️⃣ BPMN Process</h2>
 <div class="mermaid">
 flowchart TD
-    U1([Set Parameters])
-    U2([Trigger Download])
-    S1([Load ARPA Metadata])
-    S2([Download ARPA Data])
-    S3([Download ERA5 Data])
-    S4([Download Sentinel-5P])
-    S5([Merge and Harmonize])
-    S6([Compute Means])
-    S7([Export Integrated Dataset])
-    U1 --> S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7
+    A1([Set Parameters]) --> A2([Load ARPA Metadata])
+    A2 --> A3([Download ARPA Measurements])
+    A3 --> A4([Download ERA5 Data])
+    A4 --> A5([Download Sentinel-5P])
+    A5 --> A6([Merge + Harmonize])
+    A6 --> A7([Compute Period Means])
+    A7 --> A8([Export Integrated Dataset])
 </div>
 
-<!-- 2. ER -->
-<h2 id="er">2️⃣ Entity–Relationship Diagram</h2>
+<h2 id="er">2️⃣ ER Diagram</h2>
 <div class="mermaid">
 erDiagram
     CONFIG ||--o{ ARPA_SENSOR : defines
@@ -71,94 +104,61 @@ erDiagram
     SUMMARY }o--|| GRID_POINT : summarized_at
 </div>
 
-<!-- 3. Block -->
-<h2 id="block">3️⃣ Block Architecture Diagram</h2>
+<h2 id="block">3️⃣ Block Architecture</h2>
 <div class="mermaid">
 graph TD
-    A[User Interface Layer] --> B[Data Acquisition Layer]
-    B --> C[Processing Layer]
-    C --> D[Storage Layer]
-    D --> E[Visualization Layer]
-    B1[ARPA Lombardia API]:::b
-    B2[ERA5 CDS API]:::b
-    B3[Sentinel-5P GEE]:::b
-    style B1 fill:#dbeafe,stroke:#2563eb
-    style B2 fill:#dbeafe,stroke:#2563eb
-    style B3 fill:#dbeafe,stroke:#2563eb
+    UI[User Interface] --> ACQ[Data Acquisition]
+    ACQ --> PROC[Processing]
+    PROC --> STORE[Storage]
+    STORE --> VIS[Visualization]
+    ACQ1[ARPA API] --> ACQ
+    ACQ2[ERA5 CDS API] --> ACQ
+    ACQ3[Sentinel-5P GEE] --> ACQ
 </div>
 
-<!-- 4. UML -->
-<h2 id="uml">4️⃣ UML Use Case Diagram</h2>
+<h2 id="uml">4️⃣ UML Use Case</h2>
 <div class="mermaid">
 graph TD
     Researcher --> (Configure Analysis)
     Researcher --> (Download Data)
     Researcher --> (Analyze Results)
     Researcher --> (Export Dataset)
-    API[(ARPA/ERA5/Sentinel APIs)] --> (Provide Data)
-    (Download Data) --> (Merge and Harmonize)
-    (Merge and Harmonize) --> (Generate Outputs)
+    API[(External APIs)] --> (Provide Data)
 </div>
 
-<!-- 5. UX -->
-<h2 id="ux">5️⃣ UX / User Flow</h2>
+<h2 id="ux">5️⃣ UX Flow</h2>
 <div class="mermaid">
 flowchart TD
-    A1[Start Notebook/App] --> A2[Select Province & Pollutant]
-    A2 --> A3[Click "Download Data"]
-    A3 --> A4[Wait for Success]
-    A4 --> A5[Click "Analyze"]
-    A5 --> A6[Show Results + Map]
-    A6 --> A7[Export CSV/GeoPackage]
-    A7 --> A8[Upload to GEE]
+    U1[Start Notebook/App] --> U2[Select Province & Pollutant]
+    U2 --> U3[Download Data]
+    U3 --> U4[Analyze]
+    U4 --> U5[Visualize + Export]
 </div>
 
-<!-- 6. Pipeline -->
 <h2 id="pipeline">6️⃣ Pipeline Data Flow</h2>
 <div class="mermaid">
 graph LR
-    A1[ARPA Metadata] --> B1[Sensor Catalog]
-    A2[ERA5 .nc Files] --> B2[ERA5 Variables]
-    A3[Sentinel-5P Rasters] --> B3[Pollutant Data]
-    B1 --> C[Integration]
-    B2 --> C
-    B3 --> C
-    C --> D[Unified DataFrame]
-    D --> E[CSV/GeoDataFrame Export]
+    A[ARPA Metadata] --> B[Sensor Catalog]
+    C[ERA5 Files] --> D[ERA5 Variables]
+    E[Sentinel-5P] --> F[Pollutant Maps]
+    B --> G[Integration]
+    D --> G
+    F --> G
+    G --> H[Unified Dataset]
+    H --> I[Export CSV/GeoDataFrame]
 </div>
 
-<!-- 7. Computational -->
-<h2 id="architecture">7️⃣ Computational Architecture</h2>
-<div class="mermaid">
-graph TD
-    J[Jupyter / Anaconda] --> P[Python Environment]
-    P --> pandas
-    P --> geopandas
-    P --> xarray
-    P --> cdsapi
-    P --> earthengine
-    P --> contextily
-    pandas --> ARPA
-    xarray --> ERA5
-    earthengine --> Sentinel
-    ARPA & ERA5 & Sentinel --> Merge
-    Merge --> Results
-</div>
-
-<!-- 8. Integration -->
-<h2 id="integration">8️⃣ Integration and Interpolation Logic</h2>
+<h2 id="integration">7️⃣ Integration & Interpolation</h2>
 <div class="mermaid">
 flowchart TD
-    E1[ERA5 Variables] --> E2[ERA5 Dataset]
-    E2 --> E3[Interpolate to ARPA Grid]
-    E3 --> E4[ERA5 Interpolated Table]
-    S1[Sentinel-5P Observations] --> S2[Daily Mean Extraction]
-    S2 --> S3[Spatial Join with ARPA Grid]
-    E4 & S3 --> F[Integrated ERA5 + Sentinel + ARPA Dataset]
+    ERA1[ERA5 Variables] --> ERA2[Interpolate on Grid]
+    ERA2 --> ERA3[ERA5 Interpolated Table]
+    S1[Sentinel-5P Data] --> S2[Daily Mean]
+    S2 --> S3[Join with Grid]
+    ERA3 & S3 --> F[Integrated ERA5 + Sentinel + ARPA]
 </div>
 
-<!-- 9. Output -->
-<h2 id="output">9️⃣ Output Data Model</h2>
+<h2 id="output">8️⃣ Output Data Model</h2>
 <div class="mermaid">
 classDiagram
     class IntegratedDataset {
@@ -170,34 +170,26 @@ classDiagram
         float curr_mean
         float sentinel_no2
         float sentinel_co
-        float sentinel_o3
-        float sentinel_so2
         float t2m_c
         float sp_hpa
         float wind_speed
         float blh_km
         float tp
-        float ssr_kJ
-        string province
         date date
     }
 </div>
 
-<!-- 10. Tools -->
-<h2 id="tools">🔟 Tools Summary</h2>
+<h2 id="tools">9️⃣ Tools Summary</h2>
 <div class="mermaid">
 graph LR
-    A[Data APIs] -->|Fetch| B[ARPA / ERA5 / Sentinel]
-    B -->|Process| C[Python Environment]
+    A[APIs] -->|Fetch| B[Python Scripts]
+    B -->|Process| C[DataFrame]
     C -->|Store| D[results/ Folder]
-    D -->|Visualize| E[Jupyter / Web Maps]
-    E -->|Publish| F[GitHub Pages / Reports]
+    D -->|Visualize| E[Jupyter / GEE]
+    E -->|Publish| F[GitHub Pages]
 </div>
 
 </div>
-<footer>
-  © 2025 AQA Integration Pipeline — ARPA + ERA5 + Sentinel-5P
-</footer>
-
+<footer>© 2025 AQA Integration Pipeline — ARPA + ERA5 + Sentinel-5P</footer>
 </body>
 </html>

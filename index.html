@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>AQA Data Integration Pipeline</title>
+<title>AQA Data Integration Pipeline — ARPA + ERA5 + Sentinel-5P</title>
 
 <!-- Mermaid.js -->
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
@@ -38,28 +38,32 @@
 <body>
   <header>
     <h1>🌍 AQA Data Integration Pipeline</h1>
-    <p>Interactive Workflow — ARPA + ERA5 Integration</p>
+    <p>Interactive Workflow — ARPA + ERA5 + Sentinel-5P Integration</p>
   </header>
 
   <div class="container">
     <div class="mermaid">
 flowchart TD
-    A1["User Configuration (cfg: start_date, end_date, time windows, bbox, variables)"]
+    %% Inputs
+    A1["User Configuration (cfg: start_date, end_date, AOI, pollutants, time windows)"]
     A2["ARPA Lombardia API"]
     A3["ERA5 CDS API"]
+    A4["Sentinel-5P (Google Earth Engine)"]
 
-    B1["Load ARPA Metadata: Sensors, Coordinates, Pollutants"]
-    B2["Download ARPA Measurements - iterate daily, merge metadata"]
-    B3["Download ERA5 Variables - loop through variables (.nc)"]
-    B4["Merge ERA5 Files - combine NetCDF into one dataset"]
-    B5["Build Spatial Grid - compute min sensor distance, generate bounding grid"]
-    B6["Interpolate ERA5 on ARPA Grid - bilinear interpolation per hour"]
-    B7["Compute Period Means - classify hours as previous/current"]
-    B8["Merge ERA5 and ARPA - nearest join, enrich sensors with meteo context"]
-    C1["Integrated Dataset (ARPA + ERA5)"]
-    C2["Export Summary CSV and GeoDataFrame - ready for GEE or visualization"]
+    %% Processing stages
+    B1["Load ARPA Metadata — sensors, coordinates, pollutants"]
+    B2["Download ARPA Measurements — iterate daily and merge metadata"]
+    B3["Download ERA5 Variables — loop through netCDF files"]
+    B4["Merge ERA5 Files — combine into single dataset"]
+    B5["Build Spatial Grid — compute minimum sensor distance"]
+    B6["Interpolate ERA5 on ARPA Grid — bilinear interpolation"]
+    B7["Compute Period Means — classify hours as previous / current"]
+    B8["Extract Sentinel-5P Concentrations — NO₂, CO, O₃, SO₂ (mol/m²)"]
+    B9["Merge ERA5 + ARPA + Sentinel-5P — spatial join, enrichment"]
+    C1["Integrated Dataset (ARPA + ERA5 + Sentinel-5P)"]
+    C2["Export Summary CSV and GeoDataFrame — ready for visualization or GEE upload"]
 
-    %% Connections
+    %% Flow connections
     A1 --> B1
     B1 --> B2
     A2 --> B2
@@ -70,17 +74,19 @@ flowchart TD
     B4 --> B6
     B5 --> B6
     B2 --> B7
-    B6 --> B8
-    B7 --> B8
-    B8 --> C1
+    B6 --> B9
+    B7 --> B9
+    A4 --> B8
+    B8 --> B9
+    B9 --> C1
     C1 --> C2
 
     %% Styles
-    classDef stage fill:#dbeafe,stroke:#1e40af,stroke-width:1px,color:#000;
+    classDef input fill:#dbeafe,stroke:#1e40af,stroke-width:1px,color:#000;
     classDef process fill:#f1f5f9,stroke:#1e293b,stroke-width:1px,color:#000;
     classDef output fill:#dcfce7,stroke:#166534,stroke-width:1px,color:#000;
-    class A1,A2,A3 stage;
-    class B1,B2,B3,B4,B5,B6,B7,B8 process;
+    class A1,A2,A3,A4 input;
+    class B1,B2,B3,B4,B5,B6,B7,B8,B9 process;
     class C1,C2 output;
     </div>
   </div>

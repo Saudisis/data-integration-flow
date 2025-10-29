@@ -144,26 +144,27 @@ flowchart TD
 </div>
 
 
-
 <h2 id="ux">5️⃣ UX / User Flow</h2>
 <div class="mermaid">
 flowchart TD
-    start([User Opens App])
-    config[Select Province + Pollutant]
-    download[Click 'Download Data']
-    wait{Download Complete?}
-    analyze[Click 'Analyze']
-    results[View Results + Map]
-    export[Export CSV / GeoPackage]
-    gee[Optional: Upload to GEE]
-    end([Finish])
+    Start["User selects date range and AOI"]
+    Config["System sets start_date and end_date"]
+    Province["User selects Province and Pollutant"]
+    Download["System downloads ARPA + ERA5 + Sentinel data"]
+    Merge["Pipeline merges all datasets into unified grid"]
+    Analyze["Compute current and previous daily means"]
+    Export["Generate summary CSV + GeoDataFrame"]
+    Visualize["Display map and charts or send to GEE"]
 
-    start --> config --> download --> wait
-    wait -->|Yes| analyze --> results --> export --> gee --> end
-    wait -->|No| download
+    Start --> Config
+    Config --> Province
+    Province --> Download
+    Download --> Merge
+    Merge --> Analyze
+    Analyze --> Export
+    Export --> Visualize
+    Visualize --> End["User ready to explore results"]
 </div>
-
-
 
 
 <h2 id="pipeline">6️⃣ Pipeline Data Flow</h2>

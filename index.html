@@ -1,0 +1,50 @@
+flowchart TD
+
+%% === INPUTS ===
+A1[User Configuration<br>(cfg: start_date, end_date,<br>time windows, bbox, variables)]
+A2[ARPA Lombardia API]
+A3[ERA5 CDS API]
+
+%% === STAGE 1: METADATA ===
+B1[Load ARPA Metadata<br>→ Sensors, Coordinates, Pollutants]
+
+%% === STAGE 2: ARPA DOWNLOAD ===
+B2[Download ARPA Measurements<br>→ Iterate daily<br>→ Query main & backup endpoints<br>→ Merge with metadata]
+
+%% === STAGE 3: ERA5 DOWNLOAD ===
+B3[Download ERA5 Variables<br>→ Loop through 8 parameters<br>→ Store in .nc files per day]
+
+%% === STAGE 4: ERA5 MERGE ===
+B4[Merge ERA5 Files<br>→ Combine all NetCDF<br>→ Convert to DataFrame (xarray)]
+
+%% === STAGE 5: GRID GENERATION ===
+B5[Build Spatial Grid<br>→ Compute min distance<br>→ Generate points across bounding box]
+
+%% === STAGE 6: INTERPOLATION ===
+B6[Interpolate ERA5 on ARPA Grid<br>→ Bilinear interpolation<br>→ Assign values to grid cells]
+
+%% === STAGE 7: ANALYSIS ===
+B7[Compute Period Means<br>→ Classify hours (prev/curr)<br>→ Aggregate by sensor]
+
+%% === STAGE 8: FUSION ===
+B8[Merge ERA5 + ARPA<br>→ Join nearest grid points<br>→ Enrich ARPA sensors<br>with meteorological context]
+
+%% === OUTPUT ===
+C1[Integrated Dataset<br>(ARPA + ERA5 merged)]
+C2[Summary CSV + GeoDataFrame<br>→ Ready for visualization or GEE upload]
+
+%% === FLOWS ===
+A1 --> B1
+B1 --> B2
+A2 --> B2
+A1 --> B3
+A3 --> B3
+B3 --> B4
+B1 --> B5
+B4 --> B6
+B5 --> B6
+B2 --> B7
+B6 --> B8
+B7 --> B8
+B8 --> C1
+C1 --> C2

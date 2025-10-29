@@ -45,23 +45,23 @@
     <div class="mermaid">
 flowchart TD
     %% Inputs
-    A1["User Configuration (cfg: start_date, end_date, AOI, pollutants, time windows)"]
+    A1["User Configuration<br/>(dates, AOI, pollutants, time windows)"]
     A2["ARPA Lombardia API"]
     A3["ERA5 CDS API"]
-    A4["Sentinel-5P (Google Earth Engine)"]
+    A4["Sentinel-5P Data (via Google Earth Engine)"]
 
     %% Processing stages
-    B1["Load ARPA Metadata — sensors, coordinates, pollutants"]
-    B2["Download ARPA Measurements — iterate daily and merge metadata"]
-    B3["Download ERA5 Variables — loop through netCDF files"]
-    B4["Merge ERA5 Files — combine into single dataset"]
-    B5["Build Spatial Grid — compute minimum sensor distance"]
-    B6["Interpolate ERA5 on ARPA Grid — bilinear interpolation"]
-    B7["Compute Period Means — classify hours as previous / current"]
-    B8["Extract Sentinel-5P Concentrations — NO₂, CO, O₃, SO₂ (mol/m²)"]
-    B9["Merge ERA5 + ARPA + Sentinel-5P — spatial join, enrichment"]
-    C1["Integrated Dataset (ARPA + ERA5 + Sentinel-5P)"]
-    C2["Export Summary CSV and GeoDataFrame — ready for visualization or GEE upload"]
+    B1["Load ARPA Metadata<br/>(sensors, coordinates, pollutants)"]
+    B2["Download ARPA Measurements<br/>Iterate daily and merge metadata"]
+    B3["Download ERA5 Variables<br/>Loop through NetCDF files"]
+    B4["Merge ERA5 Files<br/>Combine into single dataset"]
+    B5["Build Spatial Grid<br/>Compute minimum sensor distance"]
+    B6["Interpolate ERA5 on ARPA Grid<br/>Bilinear interpolation"]
+    B7["Compute Period Means<br/>Classify hours as prev / curr"]
+    B8["Extract Sentinel-5P Concentrations<br/>(NO2, CO, O3, SO2)"]
+    B9["Merge ERA5 + ARPA + Sentinel-5P<br/>Spatial join and enrichment"]
+    C1["Integrated Dataset<br/>(ARPA + ERA5 + Sentinel-5P)"]
+    C2["Export CSV and GeoDataFrame<br/>Ready for visualization or GEE"]
 
     %% Flow connections
     A1 --> B1

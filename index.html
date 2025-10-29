@@ -148,25 +148,26 @@ flowchart TD
 <h2 id="uml">4️⃣ UML Use Case</h2>
 <div class="mermaid">
 flowchart TD
-    actorR([Researcher])
-    actorAPI([External APIs])
+    R["Researcher"]
+    API["External APIs"]
 
-    uc1([Configure Analysis])
-    uc2([Download Data])
-    uc3([Analyze Results])
-    uc4([Export Dataset])
-    uc5([Provide Data])
-    uc6([Merge and Harmonize])
-    uc7([Generate Outputs])
+    UC1["Configure Analysis"]
+    UC2["Download Data"]
+    UC3["Analyze Results"]
+    UC4["Export Dataset"]
+    UC5["Provide Data"]
+    UC6["Merge and Harmonize"]
+    UC7["Generate Outputs"]
 
-    actorR --> uc1
-    actorR --> uc2
-    actorR --> uc3
-    actorR --> uc4
-    actorAPI --> uc5
-    uc2 --> uc6
-    uc6 --> uc7
+    R --> UC1
+    R --> UC2
+    R --> UC3
+    R --> UC4
+    API --> UC5
+    UC2 --> UC6
+    UC6 --> UC7
 </div>
+
 
 
 
